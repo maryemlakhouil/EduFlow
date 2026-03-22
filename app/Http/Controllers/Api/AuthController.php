@@ -15,7 +15,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:student,teacher',
+            'role' => 'required|in:Etudiant,Enseignant',
         ]);
 
         $user = User::create([
@@ -24,17 +24,20 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
         ]);
-
+        // Crée le payload JWT sans verifie passwd 
         $token = auth('api')->login($user);
 
         return response()->json([
-            'message' => 'User registered successfully',
+            'message' => 'Inscription réussie',
             'user' => $user,
             'access_token' => $token,
             'token_type' => 'bearer',
         ], 201);
     }
 
+    // attempt() : vérifie email + password puis crée token
+
+    
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -44,12 +47,12 @@ class AuthController extends Controller
 
         if (! $token = auth('api')->attempt($credentials)) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => 'Email ou mot de passe incorrect'
             ], 401);
         }
 
         return response()->json([
-            'message' => 'Login successful',
+            'message' => 'Connexion réussie',
             'access_token' => $token,
             'token_type' => 'bearer',
             'user' => auth('api')->user(),
@@ -68,7 +71,7 @@ class AuthController extends Controller
         auth('api')->logout();
 
         return response()->json([
-            'message' => 'Logout successful'
+            'message' => 'Déconnexion réussie'
         ]);
     }
 }
