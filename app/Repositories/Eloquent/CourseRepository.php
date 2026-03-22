@@ -1,0 +1,40 @@
+<?php
+
+
+namespace App\Repositories\Eloquent;
+
+use App\Models\Course;
+use App\Repositories\Contracts\CourseRepositoryInterface;
+
+class CourseRepository implements CourseRepositoryInterface
+{
+    public function getAll()
+    {
+        return Course::all();
+    }
+    
+    // s’il existe :: retourne l’objet 
+    // s’il n’existe pas :: lance une exception automatique
+    public function findById($id)
+    {
+        return Course::findOrFail($id);
+    }
+
+    public function create(array $data)
+    {
+        return Course::create($data);
+    }
+
+    public function update($id, array $data)
+    {
+        $course = $this->findById($id);
+        $course->update($data);
+        return $course;
+    }
+
+    public function delete($id)
+    {
+        $course = $this->findById($id);
+        return $course->delete();
+    }
+}
