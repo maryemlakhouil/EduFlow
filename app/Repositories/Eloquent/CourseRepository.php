@@ -8,14 +8,14 @@ use App\Repositories\Contracts\CourseRepositoryInterface;
 
 class CourseRepository implements CourseRepositoryInterface
 {
-    public function getAll()
+    public function all()
     {
         return Course::all();
     }
     
     // s’il existe :: retourne l’objet 
     // s’il n’existe pas :: lance une exception automatique
-    public function findById($id)
+    public function find($id)
     {
         return Course::findOrFail($id);
     }

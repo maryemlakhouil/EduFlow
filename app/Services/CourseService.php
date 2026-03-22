@@ -15,12 +15,12 @@ class CourseService
 
     public function getAllCourses()
     {
-        return $this->courseRepo->getAll();
+        return $this->courseRepo->all();
     }
 
     public function getCourse($id)
     {
-        return $this->courseRepo->findById($id);
+        return $this->courseRepo->find($id);
     }
 
     public function createCourse($data, $user)
