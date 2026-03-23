@@ -27,14 +27,14 @@ class CourseRepository implements CourseRepositoryInterface
 
     public function update($id, array $data)
     {
-        $course = $this->findById($id);
+        $course = $this->find($id);
         $course->update($data);
         return $course;
     }
 
     public function delete($id)
     {
-        $course = $this->findById($id);
-        return $course->delete();
+        $course = $this->find($id);
+        return $course->delete();   
     }
 }
