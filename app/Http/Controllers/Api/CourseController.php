@@ -46,12 +46,15 @@ class CourseController extends Controller
     public function update(Request $request, $id)
     {
         $course = $this->courseService->updateCourse($id, $request->all());
-        return response()->json($course);
+        return response()->json([
+            'message' => 'Cours modifiée avec succès',
+            'data' =>  $course
+        ]);
     }
 
     public function destroy($id)
     {
         $this->courseService->deleteCourse($id);
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => 'course supprimée avec succés']);
     }
 }
