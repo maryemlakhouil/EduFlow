@@ -17,4 +17,8 @@ class Course extends Model
     {
         return $this->belongsTo(User::class, 'enseignant_id');
     }
+    public function favoredByUsers()
+    {
+        return $this->belongsToMany(User::class,'course_user')->withTimestamps();
+    }
 }
