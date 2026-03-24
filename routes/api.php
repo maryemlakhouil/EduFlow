@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CourseController;
+use App\Http\Controllers\Api\FavoretlistController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -28,6 +30,10 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/courses/{id}', [CourseController::class, 'update']);
     Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
 
-    
+    // Etudiante
+    Route::post('/wishlist/{courseId}', [FavoretlistController::class, 'store']);
+    Route::get('/wishlist', [FavoretlistController::class, 'index']);
+    Route::delete('/wishlist/{courseId}', [FavoretlistController::class, 'destroy']);
+
 
 });
