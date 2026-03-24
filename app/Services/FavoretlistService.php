@@ -14,19 +14,16 @@ class FavoretlistService
 
     public function add($courseId, $user)
     {
-        return $this->FavoretlistRepository
-            ->addToWishlist($user->id, $courseId);
+        return $this->FavoretlistRepository->addToFavoretlist($user->id, $courseId);
     }
 
     public function remove($courseId, $user)
     {
-        return $this->FavoretlistRepository
-            ->removeFromWishlist($user->id, $courseId);
+        return $this->FavoretlistRepository->removeFromFavoretlist($user->id, $courseId);
     }
 
-    public function myWishlist($user)
+    public function myFavoretlist($user)
     {
-        return $this->FavoretlistRepository
-            ->getUserWishlist($user->id);
+        return $this->FavoretlistRepository->getUserFavoretlist($user->id);
     }
 }

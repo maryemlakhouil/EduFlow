@@ -8,20 +8,17 @@ use App\Services\FavoretlistService;
 
 class FavoretlistController  extends Controller
 {
-    protected $wishlistService;
+    protected $FavoretlistService;
 
-    public function __construct(FavoretlistService $wishlistService)
+    public function __construct(FavoretlistService $FavoretlistService)
     {
-        $this->wishlistService = $wishlistService;
+        $this->FavoretlistService = $FavoretlistService;
     }
 
     // ajouter favori
     public function store($courseId)
     {
-        $this->wishlistService->add(
-            $courseId,
-            auth('api')->user()
-        );
+        $this->FavoretlistService->add($courseId,auth('api')->user());
 
         return response()->json([
             'message' => 'Cours ajouté aux favoris'
@@ -32,16 +29,14 @@ class FavoretlistController  extends Controller
     public function index()
     {
         return response()->json(
-            $this->wishlistService->myWishlist(
-                auth('api')->user()
-            )
+            $this->FavoretlistService->myFavoretlist(auth('api')->user())
         );
     }
 
     // supprimer favori
     public function destroy($courseId)
     {
-        $this->wishlistService->remove(
+        $this->FavoretlistService->remove(
             $courseId,
             auth('api')->user()
         );
