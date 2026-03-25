@@ -32,16 +32,21 @@ class CourseController extends Controller
             'titre' => 'required|string',
             'description' => 'required|string',
             'prix' => 'required|numeric',
+            'domains' => 'required|array'
         ]);
 
-        $course = $this->courseService->createCourse($data, auth('api')->user());
+        $data['enseignant_id'] = auth('api')->id();
+
+        $course = $this->courseService->createCourse($data,auth('api')->user());
+
+        // attacher domaines
+        $course->domains()->sync($request->domains);
 
         return response()->json([
             'message' => 'Cours créé avec succès',
             'data' => $course
         ], 201);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -56,5 +61,12 @@ class CourseController extends Controller
     {
         $this->courseService->deleteCourse($id);
         return response()->json(['message' => 'course supprimée avec succés']);
+    }
+
+    public function recommended()
+    {
+        $courses = $this->courseService->recommendedCourses(auth('api')->user());
+
+        return response()->json($courses);
     }
 }

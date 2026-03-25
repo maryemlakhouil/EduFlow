@@ -3,14 +3,20 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\CourseRepositoryInterface;
+use App\Services\StripeService;
+use App\Models\Course;
 
 class CourseService
 {
     protected $courseRepo;
+    protected $stripeService;
 
-    public function __construct(CourseRepositoryInterface $courseRepo)
+
+    public function __construct(CourseRepositoryInterface $courseRepo,StripeService $stripeService)
     {
         $this->courseRepo = $courseRepo;
+        $this->stripeService = $stripeService;
+
     }
 
     public function getAllCourses()
@@ -38,4 +44,19 @@ class CourseService
     {
         return $this->courseRepo->delete($id);
     }
+
+    public function recommendedCourses($user)
+    {
+        return $this->courseRepo->getRecommendedCourses($user);
+    }
+
+    public function enrollWithPayment($courseId, $user)
+    {
+        $course = $this->courseRepo->find($courseId);
+
+        return $this->stripeService->createCheckoutSession($course, $user);
+    }
+
+
+
 }
