@@ -5,7 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\User;
 use App\Repositories\Contracts\FavoretlistRepositoryInterface;
 
-class WishlistRepository implements FavoretlistRepositoryInterface
+class FavoretlistRepository implements FavoretlistRepositoryInterface
 {
     public function addToFavoretlist($userId, $courseId)
     {

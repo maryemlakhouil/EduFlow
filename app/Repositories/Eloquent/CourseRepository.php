@@ -37,4 +37,16 @@ class CourseRepository implements CourseRepositoryInterface
         $course = $this->find($id);
         return $course->delete();   
     }
+
+    public function getRecommendedCourses($user)
+    {
+        $domainIds = $user->domains()->pluck('domains.id');
+
+        return Course::whereHas('domains', function ($query) use ($domainIds) {
+            $query->whereIn('domains.id', $domainIds);
+        })
+        ->with(['enseignant', 'domains'])
+        ->latest()
+        ->get();
+    }
 }
