@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\FavoretlistController;
+use App\Http\Controllers\Api\UserDomainController;
 
 
 
@@ -18,6 +19,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Courses public 
 
+Route::get('/courses/recommended',[CourseController::class, 'recommended']);
 Route::get('/courses', [CourseController::class, 'index']);
 Route::get('/courses/{id}', [CourseController::class, 'show']);
 
@@ -34,6 +36,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/wishlist/{courseId}', [FavoretlistController::class, 'store']);
     Route::get('/wishlist', [FavoretlistController::class, 'index']);
     Route::delete('/wishlist/{courseId}', [FavoretlistController::class, 'destroy']);
+
+    Route::post('/user/domains',[UserDomainController::class,'store']);
 
 
 });
