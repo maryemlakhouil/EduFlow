@@ -32,6 +32,18 @@ class Course extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('group_id')->withTimestamps();
     }
+
+    public function groups()
+    {
+        return $this->hasMany(Group::class);
+    }  
+    
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, User::class, 'enseignant_id');
+    }
+
+
 }
