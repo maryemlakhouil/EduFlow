@@ -33,8 +33,8 @@ class StripeService
                 'user_id' => $user->id,
             ],
 
-            'success_url' => env('APP_URL').'/success',
-            'cancel_url' => env('APP_URL').'/cancel',
+            'success_url' => 'http://127.0.0.1:8000/success',
+            'cancel_url' => 'http://127.0.0.1:8000/cancel',
         ]);
     }
 }

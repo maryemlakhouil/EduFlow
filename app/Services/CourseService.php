@@ -57,6 +57,15 @@ class CourseService
         return $this->stripeService->createCheckoutSession($course, $user);
     }
 
+    public function enroll($id)
+    {
+        $session = $this->courseService->enrollWithPayment($id, auth('api')->user());
+
+        return response()->json([
+            'checkout_url' => $session->url
+        ]);
+    }
+
 
 
 }

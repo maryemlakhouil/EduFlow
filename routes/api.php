@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\FavoretlistController;
 use App\Http\Controllers\Api\UserDomainController;
+use App\Http\Controllers\Api\StripeWebhookController;
+use App\Http\Controllers\Api\TeacherGroupController;
+use App\Http\Controllers\Api\GroupController;
 
 
 
@@ -16,6 +19,16 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+ Route::post('/stripe/webhook', [StripeWebhookController::class,'handle']);  
+
+    Route::get('/success', function () {
+        return "Paiement réussi ";
+    });
+
+    Route::get('/cancel', function () {
+        return "Paiement annulé ";
+    });
 
 // Courses public 
 
@@ -38,6 +51,21 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/wishlist/{courseId}', [FavoretlistController::class, 'destroy']);
 
     Route::post('/user/domains',[UserDomainController::class,'store']);
+    Route::post('/courses/{id}/enroll',[CourseController::class,'enroll'])->middleware('auth:api');
 
+    // REtir un cours 
+
+    Route::delete('/courses/{id}/leave', [CourseController::class,'leave']);
+
+    Route::get('/teacher/courses/{id}/students',[CourseController::class,'students']);
+    Route::get('/groups/{group}', [TeacherGroupController::class, 'show']);
+    Route::get('/courses/{id}/groups',[CourseController::class, 'groups']);
+    Route::get('/groups/{id}/students',[GroupController::class, 'students']);
 
 });
+   Route::get('/courses/{id}/statistics', [CourseController::class, 'statistics'])
+    ->middleware('auth:api');
+    Route::middleware('auth:api')->get('/teacher/courses/{course}/groups',[TeacherGroupController::class, 'index']);
+    
+
+   

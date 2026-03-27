@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\CourseService;
+use App\Models\Course;
 
 class CourseController extends Controller
 {
@@ -68,5 +69,114 @@ class CourseController extends Controller
         $courses = $this->courseService->recommendedCourses(auth('api')->user());
 
         return response()->json($courses);
+    }
+
+    public function enroll($id)
+    {
+        $session = $this->courseService
+            ->enrollWithPayment($id, auth('api')->user());
+
+        return response()->json([
+            'checkout_url' => $session->url
+        ]);
+    }
+
+    public function leave($id)
+    {
+        $user = auth('api')->user();
+
+        $course = Course::findOrFail($id);
+
+        // vérifier inscription
+        if (! $user->courses()->where('course_id', $course->id)->exists()) {
+            return response()->json([
+                'message' => 'Vous n’êtes pas inscrit à ce cours'
+            ], 400);
+        }
+
+        // retirer du cours
+        $user->courses()->detach($course->id);
+
+        // retirer du groupe du cours
+        foreach ($course->groups as $group) {
+            $group->students()->detach($user->id);
+        }
+
+        return response()->json([
+            'message' => 'Vous avez quitté le cours avec succès'
+        ]);
+    }
+    // Ensegnant voir ses etudiant
+
+    public function students($id)
+    {
+        $teacher = auth('api')->user();
+
+        $course = Course::where('id', $id)
+            ->where('enseignant_id', $teacher->id)
+            ->first();
+
+        if (!$course) {
+                return response()->json([
+                    'message' => 'Cours introuvable ou non autorisé'
+                ], 404);
+            }
+        $students = $course->students()
+            ->select('users.id', 'name', 'email')
+            ->get();
+
+        return response()->json([
+            'course' => $course->titre,
+            'students' => $students
+        ]);
+    }
+
+    public function statistics($id)
+    {
+        $teacher = auth('api')->user();
+
+        // vérifier que le cours appartient à l’enseignant
+        $course = Course::where('id', $id)
+            ->where('enseignant_id', $teacher->id)
+            ->firstOrFail();
+
+        // nombre étudiants
+        $studentsCount = $course->students()->count();
+
+        // nombre groupes
+        $groupsCount = $course->groups()->count();
+
+        // revenu total de chaque course 
+        $totalRevenue = $studentsCount * $course->prix;
+
+        // moyenne taille groupe
+        $averageGroupSize = $groupsCount > 0 ? round($studentsCount / $groupsCount): 0;
+
+        return response()->json([
+            'students_count' => $studentsCount,
+            'groups_count' => $groupsCount,
+            'total_revenue' => $totalRevenue,
+            'average_group_size' => $averageGroupSize,
+        ]);
+    }
+    // les groupes 
+    
+    public function groups($id)
+    {
+        $teacher = auth('api')->user();
+
+        // vérifier que le cours appartient à l'enseignant
+        $course = Course::where('id', $id)
+            ->where('enseignant_id', $teacher->id)
+            ->firstOrFail();
+
+        $groups = $course->groups()
+            ->withCount('students')
+            ->get(['id', 'name', 'course_id']);
+
+        return response()->json([
+            'course' => $course->titre,
+            'groups' => $groups
+        ]);
     }
 }
