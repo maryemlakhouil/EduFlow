@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+
 
 class AuthController extends Controller
 {
@@ -72,6 +74,43 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Déconnexion réussie'
+        ]);
+    }
+    // gener le token de securite 
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return response()->json([
+            'message' => __($status)
+        ]);
+    }
+
+        public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $status = Password::reset(
+            $request->only('email','password','password_confirmation','token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+            }
+        );
+
+        return response()->json([
+            'message' => __($status)
         ]);
     }
 }

@@ -66,6 +66,8 @@ Route::middleware('auth:api')->group(function () {
    Route::get('/courses/{id}/statistics', [CourseController::class, 'statistics'])
     ->middleware('auth:api');
     Route::middleware('auth:api')->get('/teacher/courses/{course}/groups',[TeacherGroupController::class, 'index']);
+    Route::post('/forgot-password', [AuthController::class,'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class,'resetPassword']);
     
 
    
