@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\CourseService;
 use App\Models\Course;
+use Throwable;
 
 class CourseController extends Controller
 {
@@ -51,15 +52,38 @@ class CourseController extends Controller
 
     public function update(Request $request, $id)
     {
-        $course = $this->courseService->updateCourse($id, $request->all());
+        $teacher = auth('api')->user();
+        $course = Course::where('id', $id)
+            ->where('enseignant_id', $teacher->id)
+            ->firstOrFail();
+
+        $data = $request->validate([
+            'titre' => 'sometimes|required|string',
+            'description' => 'sometimes|required|string',
+            'prix' => 'sometimes|required|numeric',
+            'domains' => 'nullable|array'
+        ]);
+
+        $course = $this->courseService->updateCourse($id, $data);
+
+        if ($request->has('domains')) {
+            $course->domains()->sync($request->domains ?? []);
+        }
+
         return response()->json([
             'message' => 'Cours modifiée avec succès',
-            'data' =>  $course
+            'data' =>  $course->load(['enseignant', 'domains'])
         ]);
     }
 
     public function destroy($id)
     {
+        $teacher = auth('api')->user();
+
+        Course::where('id', $id)
+            ->where('enseignant_id', $teacher->id)
+            ->firstOrFail();
+
         $this->courseService->deleteCourse($id);
         return response()->json(['message' => 'course supprimée avec succés']);
     }
@@ -73,12 +97,33 @@ class CourseController extends Controller
 
     public function enroll($id)
     {
-        $session = $this->courseService
-            ->enrollWithPayment($id, auth('api')->user());
+        try {
+            $user = auth('api')->user();
 
-        return response()->json([
-            'checkout_url' => $session->url
-        ]);
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Veuillez vous connecter pour vous inscrire a ce cours.'
+                ], 401);
+            }
+
+            $course = Course::findOrFail($id);
+
+            if ($user->courses()->where('course_id', $course->id)->exists()) {
+                return response()->json([
+                    'message' => 'Vous etes deja inscrit a ce cours.'
+                ], 409);
+            }
+
+            $session = $this->courseService->enrollWithPayment($id, $user);
+
+            return response()->json([
+                'checkout_url' => $session->url
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'message' => $exception->getMessage() ?: 'Une erreur est survenue lors de la creation du paiement.'
+            ], 500);
+        }
     }
 
     public function leave($id)

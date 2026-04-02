@@ -22,6 +22,6 @@ class FavoretlistRepository implements FavoretlistRepositoryInterface
     public function getUserFavoretlist($userId)
     {
         $user = User::findOrFail($userId);
-        return $user->favoriteCourses;
+        return $user->favoriteCourses()->with(['enseignant', 'domains'])->latest()->get();
     }
 }

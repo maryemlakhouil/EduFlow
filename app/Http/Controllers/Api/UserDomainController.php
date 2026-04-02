@@ -18,7 +18,7 @@ class UserDomainController extends Controller
         $user->domains()->sync($request->domains);
 
         return response()->json([
-            'message' => 'Centres d’intérêt enregistrés'
+            'message' => 'Centres d’intérêt enregistrés '
         ]);
     }
 }

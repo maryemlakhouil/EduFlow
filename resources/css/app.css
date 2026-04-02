@@ -9,3 +9,92 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    :root {
+        --bg-cream: #f6f0ea;
+        --surface-soft: #f8f3ee;
+        --line-soft: rgba(109, 88, 80, 0.12);
+        --line-strong: rgba(109, 88, 80, 0.24);
+        --ink-900: #2f241f;
+        --ink-800: #4e3c35;
+        --ink-700: #6a5148;
+        --ink-500: #8c756b;
+        --ink-400: #b5a197;
+        --accent: #8b5e52;
+        --accent-dark: #71483d;
+        --accent-soft: #ebd9d2;
+        --olive: #879b72;
+        --gold: #cba873;
+    }
+
+    body {
+        font-family: var(--font-sans);
+    }
+}
+
+@utility font-serif {
+    font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+@layer components {
+    .nav-pill {
+        @apply rounded-full px-4 py-2 text-sm font-medium text-[var(--ink-700)] transition hover:bg-white hover:text-[var(--accent)];
+    }
+
+    .eyebrow {
+        @apply text-xs font-semibold uppercase tracking-[0.26em] text-[var(--ink-500)];
+    }
+
+    .hero-stat-card {
+        @apply rounded-[2rem] border border-[var(--line-soft)] bg-[linear-gradient(160deg,rgba(255,255,255,0.86),rgba(245,234,225,0.96))] p-6 shadow-[0_24px_60px_rgba(117,86,77,0.10)];
+    }
+
+    .search-shell {
+        @apply flex items-center gap-3 rounded-full border border-[var(--line-soft)] bg-[var(--surface-soft)] px-4 py-3.5;
+    }
+
+    .filter-chip-row {
+        @apply flex flex-wrap items-center gap-2;
+    }
+
+    .filter-chip {
+        @apply rounded-full border border-[var(--line-soft)] bg-white px-4 py-3 text-sm font-medium text-[var(--ink-700)] transition hover:border-[var(--accent)] hover:text-[var(--accent)];
+    }
+
+    .filter-chip.is-active {
+        @apply border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-dark)];
+    }
+
+    .feature-badge {
+        @apply rounded-2xl border border-[var(--line-soft)] bg-white/80 px-4 py-4 text-center text-sm font-medium text-[var(--ink-700)];
+    }
+
+    .auth-shell {
+        @apply rounded-[2rem] border border-[var(--line-soft)] bg-white/88 p-8 shadow-[0_26px_80px_rgba(117,86,77,0.10)] backdrop-blur;
+    }
+
+    .field-shell {
+        @apply block space-y-2;
+    }
+
+    .field-label {
+        @apply block text-sm font-medium text-[var(--ink-700)];
+    }
+
+    .field-input {
+        @apply w-full rounded-2xl border border-[var(--line-soft)] bg-[var(--surface-soft)] px-4 py-3.5 text-sm text-[var(--ink-900)] outline-none transition placeholder:text-[var(--ink-400)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[rgba(139,94,82,0.10)];
+    }
+
+    .info-row {
+        @apply flex items-center gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-[var(--ink-700)];
+    }
+
+    .info-dot {
+        @apply inline-block h-2.5 w-2.5 rounded-full;
+    }
+
+    .toast-card {
+        @apply pointer-events-auto rounded-2xl border border-[var(--line-soft)] bg-white px-4 py-3 text-sm shadow-[0_18px_40px_rgba(117,86,77,0.14)];
+    }
+}

@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function favoriteCourses()
     {
-        return $this->belongsToMany(Course::class,'course_user')->withTimestamps();
+        return $this->belongsToMany(Course::class, 'course_wishlist')->withTimestamps();
     }
 
     public function domains()
@@ -81,5 +81,4 @@ class User extends Authenticatable implements JWTSubject
     }
 
 }
-
 

@@ -10,14 +10,14 @@ class CourseRepository implements CourseRepositoryInterface
 {
     public function all()
     {
-        return Course::all();
+        return Course::with(['enseignant', 'domains'])->latest()->get();
     }
     
     // s’il existe :: retourne l’objet 
     // s’il n’existe pas :: lance une exception automatique
     public function find($id)
     {
-        return Course::findOrFail($id);
+        return Course::with(['enseignant', 'domains'])->findOrFail($id);
     }
 
     public function create(array $data)
