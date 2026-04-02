@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\UserDomainController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\TeacherGroupController;
 use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\Api\DashboardController;
 
 
 
@@ -39,6 +40,8 @@ Route::get('/courses/{id}', [CourseController::class, 'show']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/dashboard/student', [DashboardController::class, 'student']);
+    Route::get('/dashboard/teacher', [DashboardController::class, 'teacher']);
 
     // enseignant 
     Route::post('/courses', [CourseController::class, 'store']);
